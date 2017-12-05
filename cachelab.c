@@ -1,6 +1,6 @@
-/*
- * cachelab.c - Cache Lab helper functions
- */
+
+/* cachelab.c - Cache Lab helper function */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
