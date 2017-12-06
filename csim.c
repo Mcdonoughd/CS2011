@@ -5,6 +5,16 @@
  */
 #include "cachelab.h"
 
+struct cacheStruct{
+	int s; //
+	int S;
+	int E;
+	int b;
+	int B;
+	int hits;
+	int misses;
+	int evictions;
+};
 int main()
 {
     printSummary(0, 0, 0);
