@@ -26,37 +26,69 @@ struct cacheStruct{
 	int hits;
 	int misses;
 	int evictions;
-};
-
-void struct_init(int argc, char* argv[]){
-	if(argc<3){
-			printf("Please Initialize arguments!");
-			exit(0);
-		}
-		for (int i = 2; i < argc; i++) {
-			FILE *input = fopen(argv[i], "r");
-			if(input == NULL) {
-				fclose(input);
-				printf("Error in locating file!\n");
-				exit(0);
-				printf("\n\n");
-			}
-			//assume there will be no words greater then 40 characters
-			char* word = (char *) malloc(40);
-			//while file is not ended, read the file per word
-			while (!feof(input)) {
-				fscanf(input, "%s", word);
-				word = (char*)stripPunct(word);
-				//printf("%s",word);
-				if (strcmp(word, ""))
-					//add item to the tree
-					root = addItem(root, word);
-			}
-	}
+}mycache;
+/**
+ * prints the help message
+ */
+void helpMessage(){
+	printf("Usage: ./csim [-hv] -s <num> -E <num> -b <num> -t <file>\n");
+	printf("Options:\n");
+	printf("  -h         Print this help message.\n");
+	printf("  -v         Optional verbose flag.\n");
+	printf("  -s <num>   Number of set index bits.\n");
+	printf("  -E <num>   Number of lines per set.\n");
+	printf("  -b <num>   Number of block offset bits.\n");
+	printf("  -t <file>  Trace file.\n");
+	printf("Examples:\n");
+	printf("linux>  ./csim -s 4 -E 1 -b 4 -t traces/yi.trace\n");
+	printf("linux>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace\n");
+	exit(0);
 }
 
+
+
 int main(int argc, char* argv[]){
-    struct_init(argc, argv);
-    printSummary(hits, misses, evictions);
-    return 0;
+	//char *fileName;
+	int option = 0;
+	int vflag = 0;
+	//if no arguments
+	if (argc == 1){
+		helpMessage();
+	}
+	//
+
+
+	//Parse arguments
+	while ((option = getopt(argc, argv,"hvs:E:b:t")) != -1) {
+		switch (option) {
+		case 'h':
+			helpMessage();
+			break;
+		case 'v':
+			vflag++;
+			//printf("hello\n");
+			break;
+		case 's':
+			mycache.s = atoi(optarg);
+			//printf("S");
+			break;
+		case 'E':
+			mycache.E = atoi(optarg);
+			//printf("E");
+			break;
+		case 'b':
+			mycache.b = atoi(optarg);
+			//printf("b");
+			break;
+		case 't':
+			//fileName = optarg;
+			break;
+		default:
+			helpMessage();
+			break;
+		}
+
+	}
+	printSummary(0, 0, 0);
+	return 0;
 }
