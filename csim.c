@@ -77,10 +77,10 @@ int main(int argc, char* argv[]){
 		helpMessage();
 	}
 	//
-	Cache myCache;
+	//Cache myCache;
 
 	//Parse arguments
-	while ((option = getopt(argc, argv,"hvs:E:b:t")) != -1) {
+	while ((option = getopt(argc, argv,"hvs:E:b:t:")) != -1) {
 		switch (option) {
 		case 'h':
 			helpMessage();
@@ -90,18 +90,19 @@ int main(int argc, char* argv[]){
 			//printf("hello\n");
 			break;
 		case 's':
-			myCache.s = atoi(optarg);
+			//myCache.s = atoi(optarg);
 			//printf("S");
 			break;
 		case 'E':
-			myCache.E = atoi(optarg);
+			//myCache.E = atoi(optarg);
 			//printf("E");
 			break;
 		case 'b':
-			myCache.b = atoi(optarg);
+			//myCache.b = atoi(optarg);
 			//printf("b");
 			break;
 		case 't':
+			//printf("%s\n",optarg);
 			fileName = optarg;
 			break;
 		default:
@@ -111,16 +112,21 @@ int main(int argc, char* argv[]){
 	}
 
 	FILE *pFile = fopen (fileName,"r");
-	if(!fileName){
-		printf("No such file or directory");
-		exit(0);
-	}
-
+	if(!pFile){
+				printf("No such file or directory\n");
+				exit(0);
+			}
+	//printf("HI");
 	int maxlines = 268000; // maximum number of lines to be checked
-	char line[3];
-	char address[12];
-	while(fscanf(pFile,"%s %s", line, address)!= EOF ){
+	char line[maxlines][3];
+	char address[maxlines][16];
+	//long long int parsedHexAddresses[maxlines];
 
+	//int counter = 0;
+	//char * pEnd;
+
+	while(fscanf(pFile,"%s %s", *line, *address)!= EOF ){
+		printf("%s\n",*line);
 	}
 	printSummary(0, 0, 0);
 	return 0;
