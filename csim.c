@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <string.h>
 
 
 
@@ -111,22 +112,32 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	FILE *pFile = fopen (fileName,"r");
+	FILE *pFile = fopen (fileName,"r"); //open the file
+	//Check if File exists
 	if(!pFile){
 				printf("No such file or directory\n");
 				exit(0);
 			}
-	//printf("HI");
+
 	int maxlines = 268000; // maximum number of lines to be checked
-	char line[maxlines][3];
-	char address[maxlines][16];
+	char line[maxlines][2]; // array of the first letter in the trace file for the entire trace file
+	char address[maxlines][16]; //Array of the second part of the trace file for the entire trace file
 	//long long int parsedHexAddresses[maxlines];
 
 	//int counter = 0;
 	//char * pEnd;
 
 	while(fscanf(pFile,"%s %s", *line, *address)!= EOF ){
-		printf("%s\n",*line);
+		//if string compare is not I
+		if(strcmp(*line,"I")){
+			//put a space
+			printf(" %s %s \n",*line, *address);
+		}
+		//if line starts with I
+		else{
+			//put no space
+			printf("%s %s \n",*line, *address);
+		}
 	}
 	printSummary(0, 0, 0);
 	return 0;
