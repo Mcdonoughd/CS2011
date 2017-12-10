@@ -17,7 +17,27 @@
 #include <unistd.h>
 #include <getopt.h>
 
-struct cacheStruct{
+
+
+typedef struct bStruct{
+	int Size;
+	int valid;
+	char* tag;
+	char* data;
+}Block;
+
+typedef struct EStruct{
+	int Size;
+	Block myblock;
+
+}Line;
+
+typedef struct sStruct{
+	int Size;
+	Line myLine;
+}Set;
+
+typedef struct cacheStruct{
 	int s; 
 	int S;
 	int E;
@@ -26,7 +46,8 @@ struct cacheStruct{
 	int hits;
 	int misses;
 	int evictions;
-}mycache;
+	Set mySet;
+}Cache;
 /**
  * prints the help message
  */
@@ -48,7 +69,7 @@ void helpMessage(){
 
 
 int main(int argc, char* argv[]){
-	//char *fileName;
+	char *fileName;
 	int option = 0;
 	int vflag = 0;
 	//if no arguments
@@ -56,7 +77,7 @@ int main(int argc, char* argv[]){
 		helpMessage();
 	}
 	//
-
+	Cache myCache;
 
 	//Parse arguments
 	while ((option = getopt(argc, argv,"hvs:E:b:t")) != -1) {
@@ -69,24 +90,36 @@ int main(int argc, char* argv[]){
 			//printf("hello\n");
 			break;
 		case 's':
-			mycache.s = atoi(optarg);
+			myCache.s = atoi(optarg);
 			//printf("S");
 			break;
 		case 'E':
-			mycache.E = atoi(optarg);
+			myCache.E = atoi(optarg);
 			//printf("E");
 			break;
 		case 'b':
-			mycache.b = atoi(optarg);
+			myCache.b = atoi(optarg);
 			//printf("b");
 			break;
 		case 't':
-			//fileName = optarg;
+			fileName = optarg;
 			break;
 		default:
 			helpMessage();
 			break;
 		}
+	}
+
+	FILE *pFile = fopen (fileName,"r");
+	if(!fileName){
+		printf("No such file or directory");
+		exit(0);
+	}
+
+	int maxlines = 268000; // maximum number of lines to be checked
+	char line[3];
+	char address[12];
+	while(fscanf(pFile,"%s %s", line, address)!= EOF ){
 
 	}
 	printSummary(0, 0, 0);
