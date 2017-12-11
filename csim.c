@@ -38,8 +38,36 @@ char *parseAddress(char *address){
     return parsedAddress;
 }
 
+<<<<<<< HEAD
 void print_usage(){
 	printf("Usage: ./csim-ref [-hv] -s <num> -E <num> -b <num> -t <file>\n");
+=======
+typedef struct bStruct{
+	int valid;
+	char* tag;
+	int data;
+}Block;
+
+
+typedef struct cacheStruct{
+	int b;
+	int E;
+	int s;
+	int hits;
+	int misses;
+	int evictions;
+	Block* cacheBlock;
+	int numBlocks;
+	int Size;
+	int S;
+	int B;
+}Cache;
+/**
+ * prints the help message
+ */
+void helpMessage(){
+	printf("Usage: ./csim [-hv] -s <num> -E <num> -b <num> -t <file>\n");
+>>>>>>> c1ec78b44022c837ac3876f01e0eff094c4da12b
 	printf("Options:\n");
 	printf("  -h         Print this help message.\n");
 	printf("  -v         Optional verbose flag.\n");
@@ -53,6 +81,7 @@ void print_usage(){
 			printf("linux>  ./csim-ref -v -s 8 -E 2 -b 4 -t traces/yi.trace\n");
 }
 
+<<<<<<< HEAD
 // each line is a struct comprised of blobkBit, tag bit, and valid bit.
 typedef struct{
 	int validBit;
@@ -83,12 +112,18 @@ int main (int argc, char *argv[]){
 	int missCount = 0;
 	int evictionCount = 0;
 	int verbosity = 0;
+=======
+
+int main(int argc, char* argv[]){
+	char *fileName;
+>>>>>>> c1ec78b44022c837ac3876f01e0eff094c4da12b
 	int option = 0;
 	char *fileName;
 
 	// : in the opstring which is the third argument of getopt refers to optional input after corresponding flag
 	while ((option = getopt(argc, argv,"hvs:E:b:t:")) != -1) {
 		switch (option) {
+<<<<<<< HEAD
 			 case 'h' : print_usage();
 			 	 break;
 			 case 'v' : verbosity = 1;
@@ -108,6 +143,54 @@ int main (int argc, char *argv[]){
 			 default: print_usage();
 				 	 exit(EXIT_FAILURE);
 				 	 break;
+=======
+		case 'h':
+			helpMessage();
+			break;
+		case 'v':
+			vflag++;
+			//printf("hello\n");
+			break;
+		case 's':
+			myCache.s = (atoi(optarg));
+			printf("\n %d", myCache.s);
+			break;
+		case 'E':
+			if (atoi(optarg) <= 0){
+				printf("\n E value can't be <= 0. \n");
+				helpMessage();
+			}
+			if(!(atoi(optarg) % 2)){
+				myCache.E = atoi(optarg);
+				printf("\n %d", myCache.E);
+
+
+			}
+			else{
+				printf("\n E value not power of 2. \n");
+				helpMessage();
+			}
+			break;
+		case 'b':
+			myCache.b = (atoi(optarg));
+			myCache.S = pow(2, myCache.s);
+			myCache.B = pow(2, myCache.b);
+			printf("\n %d", myCache.b);
+			myCache.Size = (myCache.S * myCache.E * myCache.B);
+			printf("\n %d \n", myCache.Size);
+			myCache.numBlocks = myCache.S * myCache.E;
+			myCache.S = pow(2, myCache.s);
+			myCache.B = pow(2, myCache.b);
+
+			break;
+		case 't':
+			//printf("%s\n",optarg);
+			fileName = optarg;
+			break;
+		default:
+			helpMessage();
+			break;
+>>>>>>> c1ec78b44022c837ac3876f01e0eff094c4da12b
 		}
 	}
 
@@ -158,6 +241,16 @@ int main (int argc, char *argv[]){
 	for(int i = 0; i<p_cache.setSize;i++ ){
 		myCache.cacheSets[i].cacheLines = malloc(sizeof(cacheLine)*p_cache.lines); // allocate space for each set
 	}
+<<<<<<< HEAD
+=======
+
+	myCache.Size = malloc (myCache.S * myCache.E * myCache.B);
+	for (int i = 0; i <= myCache.S; i++){
+		for(int j = 0; j <= myCache.E; j++){
+
+		}
+	}
+>>>>>>> c1ec78b44022c837ac3876f01e0eff094c4da12b
 
 	// initialize cache structure data
 	for(int i = 0; i<p_cache.setSize;i++ ){
@@ -247,3 +340,5 @@ int main (int argc, char *argv[]){
 	printSummary(hitCount, missCount, evictionCount); // hit count, miss count, eviction count
     return 0;
 }
+
+
