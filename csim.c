@@ -17,37 +17,27 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <string.h>
+#include <math.h>
 
 
 
 typedef struct bStruct{
-	int Size;
 	int valid;
 	char* tag;
-	char* data;
+	int data;
 }Block;
 
-typedef struct EStruct{
-	int Size;
-	Block myblock;
-
-}Line;
-
-typedef struct sStruct{
-	int Size;
-	Line myLine;
-}Set;
 
 typedef struct cacheStruct{
-	int s; 
-	int S;
-	int E;
 	int b;
-	int B;
+	int E;
+	int s;
 	int hits;
 	int misses;
 	int evictions;
-	Set mySet;
+	Block cacheBlock;
+	int numBlocks;
+	int Size;
 }Cache;
 /**
  * prints the help message
@@ -77,8 +67,8 @@ int main(int argc, char* argv[]){
 	if (argc == 1){
 		helpMessage();
 	}
-	//
-	//Cache myCache;
+
+	Cache myCache;
 
 	//Parse arguments
 	while ((option = getopt(argc, argv,"hvs:E:b:t:")) != -1) {
@@ -91,16 +81,32 @@ int main(int argc, char* argv[]){
 			//printf("hello\n");
 			break;
 		case 's':
-			//myCache.s = atoi(optarg);
-			//printf("S");
+			myCache.s = (atoi(optarg));
+			printf("\n %d", myCache.s);
 			break;
 		case 'E':
-			//myCache.E = atoi(optarg);
-			//printf("E");
+			if (atoi(optarg) <= 0){
+				printf("\n E value can't be <= 0. \n");
+				helpMessage();
+			}
+			if(!(atoi(optarg) % 2)){
+				myCache.E = atoi(optarg);
+				printf("\n %d", myCache.E);
+
+
+			}
+			else{
+				printf("\n E value not power of 2. \n");
+				helpMessage();
+			}
 			break;
 		case 'b':
-			//myCache.b = atoi(optarg);
-			//printf("b");
+			myCache.b = (atoi(optarg));
+			printf("\n %d", myCache.b);
+			myCache.Size = (pow(2, myCache.s)) * (myCache.E) * (pow(2, myCache.b));
+			printf("\n %d \n", myCache.Size);
+			myCache.numBlocks = (pow(2, myCache.s)) * myCache.E;
+
 			break;
 		case 't':
 			//printf("%s\n",optarg);
@@ -112,12 +118,13 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+
 	FILE *pFile = fopen (fileName,"r"); //open the file
 	//Check if File exists
 	if(!pFile){
-				printf("No such file or directory\n");
-				exit(0);
-			}
+		printf("No such file or directory\n");
+		exit(0);
+	}
 
 	int maxlines = 268000; // maximum number of lines to be checked
 	char line[maxlines][2]; // array of the first letter in the trace file for the entire trace file
@@ -139,6 +146,9 @@ int main(int argc, char* argv[]){
 			printf("%s %s \n",*line, *address);
 		}
 	}
+	malloc (pow(2, myCache.s) * (myCache.E) * (pow(2, myCache.b)));
+
+
 	printSummary(0, 0, 0);
 	return 0;
 }

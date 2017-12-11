@@ -1,19 +1,19 @@
 //CSIM TO DO
 
 DONE:
-
-
-IN PROGRESS:
-
-
-TBD(Monday):
-READ input file (and edge cases)
+READ input file (and edge cases) 
 
 Restructure the Cashstruct so that
 	Size = S*E*B
 	s is composed of E
 	E is composed of b
 	b is composed of valid bit, Tag, Data
+
+IN PROGRESS:
+
+
+TBD(Monday):
+
 
 MATRIX Initialization 1D Array (testing / debugging)
 	malloc(Size)
