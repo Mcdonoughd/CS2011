@@ -35,9 +35,11 @@ typedef struct cacheStruct{
 	int hits;
 	int misses;
 	int evictions;
-	Block cacheBlock;
+	Block* cacheBlock;
 	int numBlocks;
 	int Size;
+	int S;
+	int B;
 }Cache;
 /**
  * prints the help message
@@ -56,7 +58,6 @@ void helpMessage(){
 	printf("linux>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace\n");
 	exit(0);
 }
-
 
 
 int main(int argc, char* argv[]){
@@ -102,10 +103,14 @@ int main(int argc, char* argv[]){
 			break;
 		case 'b':
 			myCache.b = (atoi(optarg));
+			myCache.S = pow(2, myCache.s);
+			myCache.B = pow(2, myCache.b);
 			printf("\n %d", myCache.b);
-			myCache.Size = (pow(2, myCache.s)) * (myCache.E) * (pow(2, myCache.b));
+			myCache.Size = (myCache.S * myCache.E * myCache.B);
 			printf("\n %d \n", myCache.Size);
-			myCache.numBlocks = (pow(2, myCache.s)) * myCache.E;
+			myCache.numBlocks = myCache.S * myCache.E;
+			myCache.S = pow(2, myCache.s);
+			myCache.B = pow(2, myCache.b);
 
 			break;
 		case 't':
@@ -146,9 +151,17 @@ int main(int argc, char* argv[]){
 			printf("%s %s \n",*line, *address);
 		}
 	}
-	malloc (pow(2, myCache.s) * (myCache.E) * (pow(2, myCache.b)));
+
+	myCache.Size = malloc (myCache.S * myCache.E * myCache.B);
+	for (int i = 0; i <= myCache.S; i++){
+		for(int j = 0; j <= myCache.E; j++){
+
+		}
+	}
 
 
 	printSummary(0, 0, 0);
 	return 0;
 }
+
+
