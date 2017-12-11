@@ -122,8 +122,8 @@ int main(int argc, char* argv[]){
 	int maxlines = 268000; // maximum number of lines to be checked
 	char line[maxlines][2]; // array of the first letter in the trace file for the entire trace file
 	char address[maxlines][16]; //Array of the second part of the trace file for the entire trace file
-	//long long int parsedHexAddresses[maxlines];
 
+	//long long int parsedHexAddresses[maxlines];
 	//int counter = 0;
 	//char * pEnd;
 
