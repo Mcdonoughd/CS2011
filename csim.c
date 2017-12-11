@@ -22,22 +22,11 @@
 
 
 typedef struct bStruct{
-	int Size;
 	int valid;
 	char* tag;
-	char* data;
+	int data;
 }Block;
 
-typedef struct EStruct{
-	int Size;
-	Block myBlock;
-
-}Line;
-
-typedef struct sStruct{
-	int Size;
-	Line myLine;
-}Set;
 
 typedef struct cacheStruct{
 	int b;
@@ -46,7 +35,8 @@ typedef struct cacheStruct{
 	int hits;
 	int misses;
 	int evictions;
-	Set mySet;
+	Block cacheBlock;
+	int numBlocks;
 	int Size;
 }Cache;
 /**
@@ -115,6 +105,7 @@ int main(int argc, char* argv[]){
 			printf("\n %d", myCache.b);
 			myCache.Size = (pow(2, myCache.s)) * (myCache.E) * (pow(2, myCache.b));
 			printf("\n %d \n", myCache.Size);
+			myCache.numBlocks = (pow(2, myCache.s)) * myCache.E;
 
 			break;
 		case 't':
@@ -155,8 +146,9 @@ int main(int argc, char* argv[]){
 			printf("%s %s \n",*line, *address);
 		}
 	}
-	myCache.Size = (2^(myCache.s)) * (myCache.E) * (2^(myCache.b));
-	printf("\n %d \n", myCache.Size);
+	malloc (pow(2, myCache.s) * (myCache.E) * (pow(2, myCache.b)));
+
+
 	printSummary(0, 0, 0);
 	return 0;
 }
