@@ -132,33 +132,38 @@ int main(int argc, char* argv[]){
 			//printf("hello\n");
 			break;
 		case 's':
+
+			if (atoi(optarg) <= 0){
+				printf("s value can't be <= 0. \n");
+				helpMessage();
+			}
+
 			myCache.s = (atoi(optarg));
 			myCache.S = pow(2, myCache.s);
-			printf("Value of s: %d\n", myCache.s);
+			//printf("Value of s: %d\n", myCache.s);
+			//printf("Value of S: %d\n", myCache.S);
 
-			printf("Value of S: %d\n", myCache.S);
 			break;
 		case 'E':
 			if (atoi(optarg) <= 0){
 				printf("E value can't be <= 0. \n");
 				helpMessage();
 			}
-			if(!(atoi(optarg) % 2) || (atoi(optarg) == 1)){
-				myCache.E = atoi(optarg);
-				printf("Value of E: %d\n", myCache.E);
 
+			myCache.E = atoi(optarg);
+			//printf("Value of E: %d\n", myCache.E);
 
-			}
-			else{
-				printf("E value not power of 2. \n");
-				helpMessage();
-			}
 			break;
 		case 'b':
+			if (atoi(optarg) <= 0){
+				printf("b value can't be <= 0. \n");
+				helpMessage();
+			}
 			myCache.b = (atoi(optarg));
 			myCache.B = pow(2, myCache.b);
-			printf("Value of b: %d\n", myCache.b);
-			printf("Value of B: %d\n", myCache.B);
+
+			//printf("Value of b: %d\n", myCache.b);
+			//printf("Value of B: %d\n", myCache.B);
 
 			break;
 		case 't':
@@ -188,20 +193,19 @@ int main(int argc, char* argv[]){
 	 * Initialize Cache
 	 */
 
-	//Calculate the size of the Cache
-	myCache.Size = (myCache.S * myCache.E * myCache.B);
-	printf("Cache SIZE: %d\n", myCache.Size);
-
 	//Calculate the Number of Blocks
 	myCache.numBlocks = (myCache.S * myCache.E);
-	printf("Cache Blocks: %d\n", myCache.numBlocks);
+	//printf("Cache Blocks: %d\n", myCache.numBlocks);
 
+	//Calculate the size of the Cache
+	myCache.Size = (myCache.numBlocks * myCache.B);
+	//printf("Cache SIZE: %d\n", myCache.Size);
 
-	printf("sizeof a block: %ld\n",sizeof(Block));
+	//printf("sizeof a block: %ld\n",sizeof(Block));
 
 	//Malloc the size needed
-	myCache.cacheBlock = malloc(myCache.numBlocks * sizeof(Block)*myCache.B);
-	printf("Cache SIZE: %ld\n", sizeof(myCache.cacheBlock));
+	myCache.cacheBlock = malloc(myCache.Size * sizeof(Block));
+	//printf("Cache SIZE: %ld\n", sizeof(myCache.cacheBlock));
 
 	//Initialize cache to all all zeros
 	for (int i = 0; i <= myCache.numBlocks; ++i){
@@ -216,6 +220,7 @@ int main(int argc, char* argv[]){
 			printf("Valid BIT: %d\n",myCache.cacheBlock[i].valid);
 			printf("DATA BIT: %d\n",myCache.cacheBlock[i].data);
 		}*/
+
 	char * nullchar;
 	while(fscanf(traceFile,"%s %s", *instruction, *address)!= EOF ){
 		//go through address to obtain the actual address and size
@@ -224,19 +229,8 @@ int main(int argc, char* argv[]){
 
 		//Simulate Cache Instruction
 		int hexAddress = strtol(newAddress,&nullchar,16);//convert address to hex
-		if(vflag ==1){
-			//if string compare is not I
-			if(strcmp(*instruction,"I")){
-				//put a space
-			}
-			//if instruction starts with I
-			else{
-				//Ignore
-				//printf("%s %s,%s %s\n",*instruction, newAddress, Size, Outcome);
-			}
-		}
 
-		//if string compare is not I (ignore if I)
+		//if string compare is not I (ignore if I?)
 		if(strcmp(*instruction,"I")){
 
 			//if vflag is set print the instructions
