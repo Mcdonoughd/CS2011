@@ -56,9 +56,11 @@ void helpMessage(){
 	exit(0);
 }
 
-int removeCommas(char* address, int addressCounter){
-	char newAddress[addressCounter];
-	for(int k = 0; k <= addressCounter; k++){
+char* removeCommas(char* address){
+ 	int addressLength = strlen(address);
+	char* newAddress = malloc(addressLength*sizeof(char));
+
+	for(int k = 0; k <= addressLength; k++){
 		if(address[k] != ','){
 			newAddress[k] = address[k];
 		}
@@ -69,7 +71,26 @@ int removeCommas(char* address, int addressCounter){
 		}
 	}
 	//printf("%d", atoi(newAddress));
-	return atoi(newAddress);
+	
+	return newAddress;
+}
+char* getSize(char* address){
+	int addressLength = strlen(address);
+	char* Size = malloc(addressLength*sizeof(char));
+
+	for(int k = 0; k <= addressLength; k++){
+		if(address[k] != ','){
+			//not important
+		}
+		else{
+			Size[0] = address[k+1];
+			Size[1] = '\0';
+			//printf("\n");
+			break;
+		}
+	}
+	//printf("%d", atoi(newAddress));
+	return Size;
 }
 
 int main(int argc, char* argv[]){
@@ -159,26 +180,21 @@ int main(int argc, char* argv[]){
 
 	//Print the file
 	if(vflag == 1){
-		int addressCounter = 0;
 		while(fscanf(pFile,"%s %s", *instruction, *address)!= EOF ){
-			
-			addressCounter++;
-			removeCommas(*address, addressCounter);
-			//printf("\n");
+			//go through address to obtain the actual address and size
+			char* newAddress = removeCommas(*address);
+			char* Size = getSize(*address);
 
 			//if string compare is not I
 			if(strcmp(*instruction,"I")){
 				//put a space
-				printf("%s %s\n",*instruction, *address);
+				printf(" %s %s,%s\n",*instruction, newAddress, Size);
 			}
 			//if instruction starts with I
 			else{
 				//put no space
-				printf("%s %s\n",*instruction, *address);
+				printf("%s %s,%s\n",*instruction, newAddress, Size);
 			}
-		//printf("%s \n", *instruction);
-		//printf("%s \n", *address);
-
 		}
 	}
 	
