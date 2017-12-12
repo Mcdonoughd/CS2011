@@ -181,7 +181,6 @@ int main(int argc, char* argv[]){
 	}
 
 	for (int i = 0; i < myCache.numBlocks; ++i){
-			
 		printf("TAG BIT: %d\n",myCache.cacheBlock[i].tag);
 		printf("Valid BIT: %d\n",myCache.cacheBlock[i].valid);
 		printf("DATA BIT: %d\n",myCache.cacheBlock[i].data);
