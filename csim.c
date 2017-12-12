@@ -56,6 +56,22 @@ void helpMessage(){
 	exit(0);
 }
 
+char* removeCommas(char* address, int addressCounter){
+	char newAddress[addressCounter];
+	for(int k = 0; k <= addressCounter; k++){
+		if(address[k] != ','){
+			newAddress[k] = address[k];
+		}
+		else{
+			printf("\n");
+			break;
+		}
+
+
+	}
+	printf("%d", atoi(newAddress));
+	return 0;
+}
 
 int main(int argc, char* argv[]){
 	//number of hits	
@@ -139,22 +155,30 @@ int main(int argc, char* argv[]){
 	}
 
 	int maxlines = 268000; // maximum number of lines to be checked
-	char line[maxlines][2]; // array of the first letter in the trace file for the entire trace file
-	char address[maxlines][16]; //Array of the second part of the trace file for the entire trace file
+	char instruction[maxlines][2]; // array of the first letter in the trace file for the entire trace file
+	char address[maxlines][3]; //Array of the second part of the trace file for the entire trace file
 
 	//Print the file
 	if(vflag == 1){
-		while(fscanf(pFile,"%s %s", *line, *address)!= EOF ){
+		while(fscanf(pFile,"%s %s", *instruction, *address)!= EOF ){
+			int addressCounter = 0;
+			addressCounter++;
+			removeCommas(*address, addressCounter);
+			printf("\n");
+
 			//if string compare is not I
-			if(strcmp(*line,"I")){
+		/*	if(strcmp(*instruction,"I")){
 				//put a space
-				printf(" %s %s \n",*line, *address);
+				printf("%s \n %s",*instruction, *address);
 			}
-			//if line starts with I
+			//if instruction starts with I
 			else{
 				//put no space
-				printf("%s %s \n",*line, *address);
+				printf("%s%s\n",*instruction, *address);
 			}
+		printf("%s \n", *instruction);
+		*/	//printf("%s \n", *address);
+
 		}
 	}
 	
