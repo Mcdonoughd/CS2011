@@ -56,21 +56,20 @@ void helpMessage(){
 	exit(0);
 }
 
-char* removeCommas(char* address, int addressCounter){
+int removeCommas(char* address, int addressCounter){
 	char newAddress[addressCounter];
 	for(int k = 0; k <= addressCounter; k++){
 		if(address[k] != ','){
 			newAddress[k] = address[k];
 		}
 		else{
-			printf("\n");
+			newAddress[k] = '\0';
+			//printf("\n");
 			break;
 		}
-
-
 	}
-	printf("%d", atoi(newAddress));
-	return 0;
+	//printf("%d", atoi(newAddress));
+	return atoi(newAddress);
 }
 
 int main(int argc, char* argv[]){
@@ -109,31 +108,31 @@ int main(int argc, char* argv[]){
 		case 's':
 			myCache.s = (atoi(optarg));
 			myCache.S = pow(2, myCache.s);
-			printf("\nValue of s: %d", myCache.s);
+			printf("Value of s: %d\n", myCache.s);
 
-			printf("\nValue of S: %d", myCache.S);
+			printf("Value of S: %d\n", myCache.S);
 			break;
 		case 'E':
 			if (atoi(optarg) <= 0){
-				printf("\n E value can't be <= 0. \n");
+				printf("E value can't be <= 0. \n");
 				helpMessage();
 			}
 			if(!(atoi(optarg) % 2) || (atoi(optarg) == 1)){
 				myCache.E = atoi(optarg);
-				printf("\nValue of E: %d", myCache.E);
+				printf("Value of E: %d\n", myCache.E);
 
 
 			}
 			else{
-				printf("\n E value not power of 2. \n");
+				printf("E value not power of 2. \n");
 				helpMessage();
 			}
 			break;
 		case 'b':
 			myCache.b = (atoi(optarg));
 			myCache.B = pow(2, myCache.b);
-			printf("\nValue of b: %d", myCache.b);
-			printf("\nValue of B: %d", myCache.B);
+			printf("Value of b: %d\n", myCache.b);
+			printf("Value of B: %d\n", myCache.B);
 
 			break;
 		case 't':
@@ -160,42 +159,43 @@ int main(int argc, char* argv[]){
 
 	//Print the file
 	if(vflag == 1){
+		int addressCounter = 0;
 		while(fscanf(pFile,"%s %s", *instruction, *address)!= EOF ){
-			int addressCounter = 0;
+			
 			addressCounter++;
 			removeCommas(*address, addressCounter);
-			printf("\n");
+			//printf("\n");
 
 			//if string compare is not I
-		/*	if(strcmp(*instruction,"I")){
+			if(strcmp(*instruction,"I")){
 				//put a space
-				printf("%s \n %s",*instruction, *address);
+				printf("%s %s\n",*instruction, *address);
 			}
 			//if instruction starts with I
 			else{
 				//put no space
-				printf("%s%s\n",*instruction, *address);
+				printf("%s %s\n",*instruction, *address);
 			}
-		printf("%s \n", *instruction);
-		*/	//printf("%s \n", *address);
+		//printf("%s \n", *instruction);
+		//printf("%s \n", *address);
 
 		}
 	}
 	
 	//Calculate the SIze of the Cache
 	myCache.Size = (myCache.S * myCache.E * myCache.B);
-	printf("\nCache SIZE: %d", myCache.Size);
+	printf("Cache SIZE: %d\n", myCache.Size);
 	
 	//Calculate the Number of Blocks	
 	myCache.numBlocks = (myCache.S * myCache.E);
-	printf("\nCache Blocks: %d", myCache.numBlocks);
+	printf("Cache Blocks: %d\n", myCache.numBlocks);
 
 	
-	printf("\nsizeof a block: %ld",sizeof(Block));
+	printf("sizeof a block: %ld\n",sizeof(Block));
 	
 	//Malloc the size needed
 	myCache.cacheBlock = malloc(myCache.numBlocks * sizeof(Block)*myCache.B);
-	printf("\nCache SIZE: %ld\n", sizeof(myCache.cacheBlock));
+	printf("Cache SIZE: %ld\n", sizeof(myCache.cacheBlock));
 
 	//Initialize cache to all all zeros
 	for (int i = 0; i <= myCache.numBlocks; ++i){
