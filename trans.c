@@ -17,6 +17,8 @@
 
 int is_transpose(int M, int N, int A[N][M], int B[M][N]);
 void trans32(int M, int N, int A[N][M], int B[M][N]);
+void transother(int M, int N, int A[N][M], int B[M][N]);
+
 /* 
  * transpose_submit - This is the solution transpose function that you
  *     will be graded on for Part B of the assignment. Do not change
@@ -33,7 +35,7 @@ void transpose_submit(int M, int N, int A[N][M], int B[M][N]){
 
 	}
 	else{
-
+		transother(M,N,A,B);
 	}
 
 
@@ -65,14 +67,39 @@ void trans(int M, int N, int A[N][M], int B[M][N])
  * trans - A simple baseline transpose function, not optimized for the cache.
  */
 char trans_desc32[] = "32x32 transpose";
-void trans32(int M, int N, int A[N][M], int B[M][N])
-{
+void trans32(int M, int N, int A[N][M], int B[M][N]){
 	int i, j, j1,i1, tmp, loc;
 	int b = 8;
 	for (i = 0; i < N; i+=b) {
 		for (j = 0; j < M; j+=b) {
 			for (i1 = i; i1 < i+b; i1++){
 				for (j1 = j; j1 < j+b; j1++){
+					if(j1 == i1){
+						tmp = A[i1][j1];
+						loc = i1;
+					}
+					else{
+						B[j1][i1] = A[i1][j1];
+					}
+				}
+				if(i == j){
+					B[loc][loc] = tmp;
+				}
+			}
+		}
+	}    
+}
+/* 
+ * trans - A simple baseline transpose function, not optimized for the cache.
+ */
+char trans_descother[] = "MXN transpose";
+void transother(int M, int N, int A[N][M], int B[M][N]){
+	int i, j, j1,i1, tmp, loc;
+	int b = 16;
+	for (i = 0; i < N; i+=b) {
+		for (j = 0; j < M; j+=b) {
+			for (i1 = i; ((i1 < i+b) && (i1 < N)); i1++){
+				for (j1 = j; ((j1 < j+b) && (j1 < M)); j1++){
 					if(j1 == i1){
 						tmp = A[i1][j1];
 						loc = i1;
@@ -104,6 +131,8 @@ void registerFunctions(){
 	/* Register any additional transpose functions */
 	registerTransFunction(trans, trans_desc); 
 	registerTransFunction(trans32, trans_desc32); 
+
+	registerTransFunction(transother, trans_descother); 
 
 }
 
