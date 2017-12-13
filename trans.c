@@ -17,6 +17,7 @@
 
 int is_transpose(int M, int N, int A[N][M], int B[M][N]);
 void trans32(int M, int N, int A[N][M], int B[M][N]);
+void trans64(int M, int N, int A[N][M], int B[M][N]);
 void transother(int M, int N, int A[N][M], int B[M][N]);
 
 /* 
@@ -32,7 +33,7 @@ void transpose_submit(int M, int N, int A[N][M], int B[M][N]){
 		trans32(M,N,A,B);
 	}
 	else if(N == 64){
-
+		trans64(M,N,A,B);
 	}
 	else{
 		transother(M,N,A,B);
@@ -115,6 +116,48 @@ void transother(int M, int N, int A[N][M], int B[M][N]){
 		}
 	}    
 }
+/* 
+ * trans - A simple baseline transpose function, not optimized for the cache.
+ */
+char trans_desc64[] = "64x64 transpose";
+void trans64(int M, int N, int A[N][M], int B[M][N]){
+	
+	int i, j1, j;
+	
+	//temporary variables are important
+	int tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+	
+	int b = 4;
+
+	for(i = 0; i < N; i += b) {
+		for(j1 = 0; j1 < N; j1 += b) {
+			for(j = j1; j < j1 + b; j += 2) {
+				//Temp variable serve as inbetween to quickly load from cache 
+
+				//cant be loop due to spacial locality
+				tmp0 = A[i][j];
+				tmp1 = A[i + 1][j];
+				tmp2 = A[i + 2][j];
+				tmp3 = A[i + 3][j];
+				tmp4 = A[i][j + 1];
+				tmp5 = A[i + 1][j + 1];
+				tmp6 = A[i + 2][j + 1];
+				tmp7 = A[i + 3][j + 1];
+
+
+				B[j][i] = tmp0;
+				B[j][i + 1] = tmp1;
+				B[j][i + 2] = tmp2;
+				B[j][i + 3] = tmp3;
+				B[j + 1][i] = tmp4;
+				B[j + 1][i + 1] = tmp5;
+				B[j + 1][i + 2] = tmp6;
+				B[j + 1][i + 3] = tmp7;
+			}
+		}
+	}
+}
+
 
 /*
  * registerFunctions - This function registers your transpose
@@ -134,6 +177,7 @@ void registerFunctions(){
 
 	registerTransFunction(transother, trans_descother); 
 
+	registerTransFunction(trans64, trans_desc64); 
 }
 
 /* 
