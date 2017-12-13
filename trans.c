@@ -16,7 +16,7 @@
 #include "cachelab.h"
 
 int is_transpose(int M, int N, int A[N][M], int B[M][N]);
-
+void trans32(int M, int N, int A[N][M], int B[M][N]);
 /* 
  * transpose_submit - This is the solution transpose function that you
  *     will be graded on for Part B of the assignment. Do not change
@@ -26,7 +26,15 @@ int is_transpose(int M, int N, int A[N][M], int B[M][N]);
  */
 char transpose_submit_desc[] = "Transpose submission"; //do not change
 void transpose_submit(int M, int N, int A[N][M], int B[M][N]){
-	int blocksize;
+	if(N == 32){
+		trans32(M,N,A,B);
+	}
+	else if(N == 64){
+
+	}
+	else{
+
+	}
 
 
 }
@@ -53,6 +61,34 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 
 }
 
+/* 
+ * trans - A simple baseline transpose function, not optimized for the cache.
+ */
+char trans_desc32[] = "32x32 transpose";
+void trans32(int M, int N, int A[N][M], int B[M][N])
+{
+	int i, j, j1,i1, tmp, loc;
+	int b = 8;
+	for (i = 0; i < N; i+=b) {
+		for (j = 0; j < M; j+=b) {
+			for (i1 = i; i1 < i+b; i1++){
+				for (j1 = j; j1 < j+b; j1++){
+					if(j1 == i1){
+						tmp = A[i1][j1];
+						loc = i1;
+					}
+					else{
+						B[j1][i1] = A[i1][j1];
+					}
+				}
+				if(i == j){
+					B[loc][loc] = tmp;
+				}
+			}
+		}
+	}    
+}
+
 /*
  * registerFunctions - This function registers your transpose
  *     functions with the driver.  At runtime, the driver will
@@ -67,6 +103,7 @@ void registerFunctions(){
 
 	/* Register any additional transpose functions */
 	registerTransFunction(trans, trans_desc); 
+	registerTransFunction(trans32, trans_desc32); 
 
 }
 
