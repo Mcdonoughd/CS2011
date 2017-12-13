@@ -29,13 +29,14 @@ void transother(int M, int N, int A[N][M], int B[M][N]);
  */
 char transpose_submit_desc[] = "Transpose submission"; //do not change
 void transpose_submit(int M, int N, int A[N][M], int B[M][N]){
+	//If test is 32x32 then run the 32 function
 	if(N == 32){
 		trans32(M,N,A,B);
-	}
+	}//if test is 6464 then run the 64 function
 	else if(N == 64){
 		trans64(M,N,A,B);
 	}
-	else{
+	else{//if the test is  61x67 or anything else run this function
 		transother(M,N,A,B);
 	}
 
@@ -65,25 +66,35 @@ void trans(int M, int N, int A[N][M], int B[M][N])
 }
 
 /* 
- * trans - A simple baseline transpose function, not optimized for the cache.
+ * trans32 - A transpose function, optimized for the cache for array 32x32 
  */
 char trans_desc32[] = "32x32 transpose";
 void trans32(int M, int N, int A[N][M], int B[M][N]){
 	int i, j, j1,i1, tmp, loc;
-	int b = 8;
+	
+	int b = 8; //cache block size
+	
+	//move through whole array by increments of bxb cache size
 	for (i = 0; i < N; i+=b) {
 		for (j = 0; j < M; j+=b) {
+			
+			//move through the bxb block
 			for (i1 = i; i1 < i+b; i1++){
 				for (j1 = j; j1 < j+b; j1++){
+					
+					//check if diagonal, to save time store it in a local var
 					if(j1 == i1){
-						tmp = A[i1][j1];
-						loc = i1;
+						tmp = A[i1][j1]; //value of diagonal
+						loc = i1; //location of diagonal
 					}
 					else{
+						//translate value
 						B[j1][i1] = A[i1][j1];
 					}
 				}
+				
 				if(i == j){
+					//if diagonal translate the value
 					B[loc][loc] = tmp;
 				}
 			}
@@ -91,25 +102,30 @@ void trans32(int M, int N, int A[N][M], int B[M][N]){
 	}    
 }
 /* 
- * trans - A simple baseline transpose function, not optimized for the cache.
+ * transother - A transpose function, optimized for the cache to work for 61x67 array.
  */
 char trans_descother[] = "MXN transpose";
 void transother(int M, int N, int A[N][M], int B[M][N]){
 	int i, j, j1,i1, tmp, loc;
-	int b = 16;
+	int b = 16; //cache block size
+	//move through whole array by increments of bxb cache size
 	for (i = 0; i < N; i+=b) {
 		for (j = 0; j < M; j+=b) {
+			//move through the bxb block, such that the pointer doesnt go over N or M
 			for (i1 = i; ((i1 < i+b) && (i1 < N)); i1++){
 				for (j1 = j; ((j1 < j+b) && (j1 < M)); j1++){
+					//check if diagonal, to save time store it in a local var
 					if(j1 == i1){
-						tmp = A[i1][j1];
-						loc = i1;
+						tmp = A[i1][j1]; //value of diagonal
+						loc = i1; //location of diagonal
 					}
 					else{
+						//translate value
 						B[j1][i1] = A[i1][j1];
 					}
 				}
 				if(i == j){
+					//if diagonal translate the value
 					B[loc][loc] = tmp;
 				}
 			}
@@ -124,17 +140,18 @@ void trans64(int M, int N, int A[N][M], int B[M][N]){
 	
 	int i, j1, j;
 	
-	//temporary variables are important
+	//temporary variables that simulate the row of the cache
 	int tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
 	
-	int b = 4;
-
+	int b = 4; //cache block size
+	
+	//go through array ikj style
 	for(i = 0; i < N; i += b) {
 		for(j1 = 0; j1 < N; j1 += b) {
 			for(j = j1; j < j1 + b; j += 2) {
 				//Temp variable serve as inbetween to quickly load from cache 
 
-				//cant be loop due to spacial locality
+				//not in loop to use spacial locality
 				tmp0 = A[i][j];
 				tmp1 = A[i + 1][j];
 				tmp2 = A[i + 2][j];
@@ -174,9 +191,7 @@ void registerFunctions(){
 	/* Register any additional transpose functions */
 	registerTransFunction(trans, trans_desc); 
 	registerTransFunction(trans32, trans_desc32); 
-
 	registerTransFunction(transother, trans_descother); 
-
 	registerTransFunction(trans64, trans_desc64); 
 }
 
