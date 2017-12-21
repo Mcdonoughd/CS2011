@@ -1,7 +1,7 @@
 /*Cachelab assignment for CS-2011 B'17
- * Written by Surya Vadivazhagu (svadivazhagu) and
- * Daniel McDonough (dmcdonough) 
+ * Written by Surya Vadivazhagu and Daniel McDonough
  *
+ * 
  * Team dmcdonough-svadivazhagu
  *
  */

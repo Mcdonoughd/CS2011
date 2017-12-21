@@ -1,8 +1,6 @@
 /*Cachelab assignment for CS-2011 B'17
- * Written by Surya Vadivazhagu (svadivazhagu) and
- * Daniel McDonough (dmcdonough) 
- *
- * Team dmcdonough-svadivazhagu
+ * Written by Surya Vadivazhagu and Daniel McDonough
+ *  
  *
  * trans.c - Matrix transpose B = A^T
  *
@@ -133,46 +131,105 @@ void transother(int M, int N, int A[N][M], int B[M][N]){
 	}    
 }
 /* 
- * trans - A simple baseline transpose function, not optimized for the cache.
+ * trans64 - A simple baseline transpose function, not optimized for the cache.
  */
 char trans_desc64[] = "64x64 transpose";
 void trans64(int M, int N, int A[N][M], int B[M][N]){
-	
-	int i, j1, j;
-	
-	//temporary variables that simulate the row of the cache
-	int tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
-	
-	int b = 4; //cache block size
-	
-	//go through array ikj style
-	for(i = 0; i < N; i += b) {
-		for(j1 = 0; j1 < N; j1 += b) {
-			for(j = j1; j < j1 + b; j += 2) {
-				//Temp variable serve as inbetween to quickly load from cache 
+// Trans 64 by Vo Tran Thanh Luong
 
-				//not in loop to use spacial locality
-				tmp0 = A[i][j];
-				tmp1 = A[i + 1][j];
-				tmp2 = A[i + 2][j];
-				tmp3 = A[i + 3][j];
-				tmp4 = A[i][j + 1];
-				tmp5 = A[i + 1][j + 1];
-				tmp6 = A[i + 2][j + 1];
-				tmp7 = A[i + 3][j + 1];
+int colRun, rowRun, k, a0, a1, a2, a3, a4, a5, a6, a7; // supporting variables
+
+    // two loops to go through each row and column block 
+    for(colRun=0; colRun<64; colRun+=8 ){
+       	for(rowRun=0; rowRun<64; rowRun+=8 ){
+
+        /* 
+        The first loop is for a 4 collumn 8 row of A. In this loop we  use the supporting variables to store all elements of a row. Then we try to transpose with the right positions in B. However, we are doing on a 4row x 8 collumn B to avoid cache miss so not all elements will be transposed correctly. For example A[3][5] cannot be transposed to B[5][3]. Thus, elements which can't be transposed correctly will be stored in another location for later use.
+        */ 
+        	for(k=0; k<4; k++){ 
+        		a0 = A[colRun+k][rowRun+0];
+        		a1 = A[colRun+k][rowRun+1];
+        		a2 = A[colRun+k][rowRun+2];
+        		a3 = A[colRun+k][rowRun+3];
+        		a4 = A[colRun+k][rowRun+4];
+        		a5 = A[colRun+k][rowRun+5];
+        		a6 = A[colRun+k][rowRun+6];
+        		a7 = A[colRun+k][rowRun+7];
+
+        		// In the code, I comment "Good job" for the elements that are transposed correctly. "Later use" for later assignment
+        		B[rowRun+0][colRun+k+0] = a0;   // good job
+        		B[rowRun+0][colRun+k+4] = a5;	// later use
+        		B[rowRun+1][colRun+k+0] = a1;	// good job
+        		B[rowRun+1][colRun+k+4] = a6;	//later use
+        		B[rowRun+2][colRun+k+0] = a2;	// good job
+        		B[rowRun+2][colRun+k+4] = a7;	//later use
+        		B[rowRun+3][colRun+k+0] = a3;	// good job
+        		B[rowRun+3][colRun+k+4] = a4;	// later use
+        	}
 
 
-				B[j][i] = tmp0;
-				B[j][i + 1] = tmp1;
-				B[j][i + 2] = tmp2;
-				B[j][i + 3] = tmp3;
-				B[j + 1][i] = tmp4;
-				B[j + 1][i + 1] = tmp5;
-				B[j + 1][i + 2] = tmp6;
-				B[j + 1][i + 3] = tmp7;
-			}
-		}
-	}
+            /* Part B, moving sub-matrix b to sub-matrix c
+             * and moving A->B for sub-matrix b and move matrix d
+             */
+            /*
+            Now that we have dealt with the first 4 col 8 arrow of A. The next job to deal with the "later use" assignment above. The "later use" assignments that we did above have taken a lot of places, so we need to bring these elements to their right positions. 
+             */
+        	a0 = A[colRun+4][rowRun+4];
+        	a1 = A[colRun+5][rowRun+4];
+        	a2 = A[colRun+6][rowRun+4];
+        	a3 = A[colRun+7][rowRun+4];
+        	a4 = A[colRun+4][rowRun+3];
+        	a5 = A[colRun+5][rowRun+3];
+        	a6 = A[colRun+6][rowRun+3];
+        	a7 = A[colRun+7][rowRun+3];
+
+
+        	B[rowRun+4][colRun+0] = B[rowRun+3][colRun+4];  // B[4][0] = a4 = A[0][4] For example
+        	B[rowRun+4][colRun+4] = a0;  // B[4][4] = A[4][4] For example
+        	B[rowRun+3][colRun+4] = a4;
+        	B[rowRun+4][colRun+1] = B[rowRun+3][colRun+5];
+        	B[rowRun+4][colRun+5] = a1;
+        	B[rowRun+3][colRun+5] = a5;
+        	B[rowRun+4][colRun+2] = B[rowRun+3][colRun+6];
+        	B[rowRun+4][colRun+6] = a2;
+        	B[rowRun+3][colRun+6] = a6;
+        	B[rowRun+4][colRun+3] = B[rowRun+3][colRun+7];
+        	B[rowRun+4][colRun+7] = a3;
+        	B[rowRun+3][colRun+7] = a7;
+
+        	// this loops deal with the the remaning elements .
+        	for(k=0;k<3;k++){
+
+
+        		a0 = A[colRun+4][rowRun+5+k];
+        		a1 = A[colRun+5][rowRun+5+k];
+        		a2 = A[colRun+6][rowRun+5+k];
+        		a3 = A[colRun+7][rowRun+5+k];
+        		a4 = A[colRun+4][rowRun+k];
+        		a5 = A[colRun+5][rowRun+k];
+        		a6 = A[colRun+6][rowRun+k];
+        		a7 = A[colRun+7][rowRun+k];
+
+
+        		B[rowRun+5+k][colRun+0] = B[rowRun+k][colRun+4];
+        		B[rowRun+5+k][colRun+4] = a0;
+        		B[rowRun+k][colRun+4] = a4;
+        		B[rowRun+5+k][colRun+1] = B[rowRun+k][colRun+5];
+        		B[rowRun+5+k][colRun+5] = a1;
+        		B[rowRun+k][colRun+5] = a5;
+        		B[rowRun+5+k][colRun+2] = B[rowRun+k][colRun+6];
+        		B[rowRun+5+k][colRun+6] = a2;
+        		B[rowRun+k][colRun+6] = a6;
+        		B[rowRun+5+k][colRun+3] = B[rowRun+k][colRun+7];
+        		B[rowRun+5+k][colRun+7] = a3;
+        		B[rowRun+k][colRun+7] = a7;
+
+
+        	}
+
+
+        }
+} 
 }
 
 
