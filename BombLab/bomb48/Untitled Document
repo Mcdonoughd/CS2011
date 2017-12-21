@@ -1,0 +1,21 @@
+
+26439194 = 0x1936E1A = eax = 0
+
+
+01100100110110111000011010 = eax
+111111111111111111111101100100110110111000011010 = eax padded
+011111111111111111111111111111111101110111100100 = rsp+4
+111111111111111111111101100100110110111000000100
+
+at test fff,eax
+i r eax get decimal
+decimal to two's compliment
+i r rsp get hex+4
+hex to binary
+
+overlay the two binary numbers
+pad twos comp to the left with ones
+
+next xor the two so that the first 12 bits are 000
+now the two's compliment of the new binary will be 0xfff
+enter two's compliment to decimal
